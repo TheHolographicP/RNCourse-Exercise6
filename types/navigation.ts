@@ -2,12 +2,13 @@ import type {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
+import { Location } from 'model/place';
 
 export type RootStackParamList = {
   AllPlaces: undefined;
   AddPlace: undefined;
   PlaceDetails: { placeId: string };
-  Map: undefined;
+  Map: {location: Location| undefined};
 };
 
 export type AllPlacesScreenProps = NativeStackScreenProps<
@@ -22,6 +23,7 @@ export type PlaceDetailsScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'PlaceDetails'
 >;
+
 export type MapScreenProps = NativeStackScreenProps<RootStackParamList, 'Map'>;
 
 export type RootStackNavigationProp = NativeStackNavigationProp<RootStackParamList>;

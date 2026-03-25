@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, Alert, StyleSheet, ActivityIndicator } from 'react-native';
-import { getCurrentPositionAsync, LocationAccuracy, useForegroundPermissions } from 'expo-location';
-
+import { getCurrentPositionAsync, getLastKnownPositionAsync, LocationAccuracy, useForegroundPermissions } from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 
 import { OutlinedButton } from 'components/OutlinedButton';
 
 import type { Location } from 'model/place';
+import { RootStackNavigationProp } from 'types/navigation';
 
 import LAYOUT from 'constants/layout';
 import { Colors } from 'constants/colors';
 
+
 export function LocationPicker() {
+    const navigation = useNavigation<RootStackNavigationProp>();
     const [location, setLocation] = useState<Location>();
+    const [pickedLocation, setPickedLocation] = useState<Location>();
+
     const [permission, requestPermission] = useForegroundPermissions();
     const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
@@ -28,6 +33,22 @@ export function LocationPicker() {
         return true;
     }
     
+    useEffect(() => {
+        async function fetchLocation() {
+            const hasPermission = await verifyPermissions();
+            if (!hasPermission) {
+                return;
+            }
+            
+            const position = await getCurrentPositionAsync({accuracy: LocationAccuracy.High});
+            setLocation({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            });
+        }
+        
+        fetchLocation();
+    }, []);
     
     async function getLocationHandler() {
         const hasPermission = await verifyPermissions();
@@ -36,16 +57,28 @@ export function LocationPicker() {
         }
 
         setIsLoadingLocation(true);
-        const position = await getCurrentPositionAsync({accuracy: LocationAccuracy.High});
-        setIsLoadingLocation(false);
+        var position = await getLastKnownPositionAsync({maxAge: 1000 * 5});
+        if (!position) {
+            position = await getCurrentPositionAsync({accuracy: LocationAccuracy.High});
+        }
+
         setLocation({
             lat: position.coords.latitude,
             lng: position.coords.longitude
         });
+
+        setPickedLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        });
+        
+        setIsLoadingLocation(false);
     }
 
     function pickOnMapHandler() {
-    
+        const mapCenter = location
+        navigation.navigate('Map', { location: mapCenter });
+
     }
 
     return (
@@ -54,20 +87,20 @@ export function LocationPicker() {
             <View style={styles.locationPreview}>
                 {isLoadingLocation ? (
                     <ActivityIndicator size="large" color={Colors.primary500} />
-                ) : location ? (
+                ) : pickedLocation ? (
                     <MapView
                         style={styles.map}
                         region={{
-                            latitude: location.lat,
-                            longitude: location.lng,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}
+                            latitude: pickedLocation.lat,
+                            longitude: pickedLocation.lng,
+                            latitudeDelta: 0.366,
+                            longitudeDelta: 0.16,
+                        }} 
                     >
                         <Marker
                             coordinate={{
-                                latitude: location.lat,
-                                longitude: location.lng,
+                                latitude: pickedLocation.lat,
+                                longitude: pickedLocation.lng,
                             }}
                         />
                     </MapView>
