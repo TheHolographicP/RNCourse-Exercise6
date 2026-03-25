@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { View, Text, Alert, StyleSheet } from 'react-native';
+import { View, Text, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import { getCurrentPositionAsync, LocationAccuracy, useForegroundPermissions } from 'expo-location';
+
+import MapView, { Marker } from 'react-native-maps';
 
 import { OutlinedButton } from 'components/OutlinedButton';
 
@@ -12,7 +14,9 @@ import { Colors } from 'constants/colors';
 export function LocationPicker() {
     const [location, setLocation] = useState<Location>();
     const [permission, requestPermission] = useForegroundPermissions();
-    
+    const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+
+
     async function verifyPermissions() {
         if (permission && permission.status !== 'granted') {
             const { status } = await requestPermission();
@@ -31,8 +35,9 @@ export function LocationPicker() {
             return;
         }
 
+        setIsLoadingLocation(true);
         const position = await getCurrentPositionAsync({accuracy: LocationAccuracy.High});
-        console.log(position);
+        setIsLoadingLocation(false);
         setLocation({
             lat: position.coords.latitude,
             lng: position.coords.longitude
@@ -47,7 +52,28 @@ export function LocationPicker() {
         <View>
             <Text style={styles.inputLabel}>Location Picker:</Text>
             <View style={styles.locationPreview}>
-                <Text>No location picked yet.</Text>
+                {isLoadingLocation ? (
+                    <ActivityIndicator size="large" color={Colors.primary500} />
+                ) : location ? (
+                    <MapView
+                        style={styles.map}
+                        region={{
+                            latitude: location.lat,
+                            longitude: location.lng,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
+                    >
+                        <Marker
+                            coordinate={{
+                                latitude: location.lat,
+                                longitude: location.lng,
+                            }}
+                        />
+                    </MapView>
+                ) : (
+                    <Text>No location picked yet.</Text>
+                )}
             </View>
             <View style={styles.buttonsContainer}>
                 <OutlinedButton icon="location" onPress={getLocationHandler}>Use Current Location</OutlinedButton>
