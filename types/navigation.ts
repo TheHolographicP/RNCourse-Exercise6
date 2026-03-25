@@ -7,13 +7,7 @@ export type RootStackParamList = {
   AllPlaces: undefined;
   AddPlace: undefined;
   PlaceDetails: { placeId: string };
-  Map:
-    | {
-        initialLat?: number;
-        initialLng?: number;
-        isReadOnly?: boolean;
-      }
-    | undefined;
+  Map: undefined;
 };
 
 export type AllPlacesScreenProps = NativeStackScreenProps<
