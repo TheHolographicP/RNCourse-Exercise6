@@ -1,9 +1,49 @@
-import { View, Text } from 'react-native';
+import { useState } from 'react';
+import { View, Text, ScrollView, TextInput, StyleSheet } from 'react-native';
+
+import LAYOUT from 'constants/layout';
+import { Colors } from 'constants/colors';
+import { ImagePicker } from 'components/Places/ImagePicker';
 
 export function PlaceForm() {
+    const [enteredTitle, setEnteredTitle] = useState('');
+
+    function handleTitleChange(text: string) {
+        setEnteredTitle(text);
+    }
+
+
     return (
-        <View>
-            <Text>PlaceForm</Text>
-        </View>
+        <ScrollView style={styles.form}>
+            <View>
+                <Text style={styles.inputLabel}>Title:</Text>
+                <TextInput style={styles.textInput} onChangeText={handleTitleChange} value={enteredTitle} />
+            </View>
+
+            <ImagePicker />
+        </ScrollView>
     );
 }
+
+
+const styles = StyleSheet.create({
+    form: {
+        flex: 1,
+        padding: LAYOUT.padding
+    },
+    inputLabel: {
+        fontWeight: 'bold',
+        marginBottom: 4,
+        fontSize: 16,
+        color: Colors.primary500
+    },
+    textInput: {
+        marginVertical: 8,
+        paddingHorizontal: 4,
+        paddingVertical: 8,
+        fontSize: 16,
+        borderBottomColor: Colors.primary700,
+        borderBottomWidth: 1,
+        backgroundColor: Colors.primary100,
+    },
+});

@@ -6,6 +6,7 @@ import { PlaceItem } from 'components/Places/PlaceItem';
 
 import { Place } from 'model/place';
 import LAYOUT from 'constants/layout';
+import { Colors } from 'constants/colors';
 import { RootStackParamList } from 'types/navigation';
 
 
@@ -56,6 +57,6 @@ const styles = StyleSheet.create({
     },
     fallbackText: {
         fontSize: 16,
-        color: '#888'
+        color: Colors.primary200
     }
 });
