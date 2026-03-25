@@ -1,8 +1,8 @@
 import { PlaceForm } from 'components/Places/PlaceForm';
 import { AddPlaceScreenProps } from 'types/navigation';
 
-export function AddPlace(_props: AddPlaceScreenProps) {
+export function AddPlace({ route }: AddPlaceScreenProps) {
     return (
-        <PlaceForm />
+        <PlaceForm pickedLocation={route.params?.pickedLocation} />
     );
 }

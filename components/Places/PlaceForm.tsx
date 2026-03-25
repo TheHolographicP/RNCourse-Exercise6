@@ -6,7 +6,9 @@ import { Colors } from 'constants/colors';
 import { ImagePicker } from 'components/Places/ImagePicker';
 import { LocationPicker } from 'components/Places/LocationPicker';
 
-export function PlaceForm() {
+import type { Location } from 'model/place';
+
+export function PlaceForm({pickedLocation}: {pickedLocation?: Location}) {
     const [enteredTitle, setEnteredTitle] = useState('');
 
     function handleTitleChange(text: string) {

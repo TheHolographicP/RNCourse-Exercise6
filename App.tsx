@@ -31,7 +31,7 @@ export default function App() {
             <IconButton 
               icon="add"
               size={24}
-              onPress={() => navigation.navigate('AddPlace')}
+              onPress={() => navigation.navigate('AddPlace', { pickedLocation: undefined })}
               iconColor={tintColor}
             />
           )
