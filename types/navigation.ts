@@ -2,10 +2,10 @@ import type {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import { Location } from 'model/place';
+import { Location, Place } from 'model/place';
 
 export type RootStackParamList = {
-  AllPlaces: undefined;
+  AllPlaces: {places?: Place[]; newPlace?: Place;};
   AddPlace: { pickedLocation?: Location | undefined};
   PlaceDetails: { placeId: string };
   Map: {location: Location| undefined};
