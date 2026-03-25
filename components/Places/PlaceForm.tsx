@@ -8,9 +8,13 @@ import { LocationPicker } from 'components/Places/LocationPicker';
 
 import { Button } from 'components/Button';
 
-import type { Location } from 'model/place';
+import { Location, Place } from 'model/place';
 
-export function PlaceForm() {
+type Props = {
+    onCreatePlace: (place: Place) => void;
+}
+
+export function PlaceForm({onCreatePlace}: Props) {
     const [enteredTitle, setEnteredTitle] = useState('');
     const [selectedImageURI, setSelectedImageURI] = useState<string>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -34,11 +38,13 @@ export function PlaceForm() {
 
 
     function savePlaceHandler() {
-        console.log('Saving place...');
-        console.log('Title:', enteredTitle);
-        console.log('Image URI:', selectedImageURI);
-        console.log('Location:', selectedLocation);
-        console.log('Address:', selectedAddress);
+        const savedPlace: Place = new Place(
+            enteredTitle,
+            selectedImageURI!,
+            selectedAddress!,
+            selectedLocation!
+        );
+        onCreatePlace(savedPlace);
 
     }
 
