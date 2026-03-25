@@ -7,14 +7,10 @@ import LAYOUT from 'constants/layout';
 import { Colors } from 'constants/colors';
 import { useState } from 'react';
 
-
-
-
 export function ImagePicker({ onChangeImage }: { onChangeImage: (uri: string) => void }) {
     const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermissionInformation, requestMediaLibraryPermission] = useMediaLibraryPermissions();
     const [imageUri, setImageUri] = useState<string>();
-
 
     async function verifyPermissions() {
         if (!cameraPermissionInformation || !mediaLibraryPermissionInformation) {
@@ -33,13 +29,41 @@ export function ImagePicker({ onChangeImage }: { onChangeImage: (uri: string) =>
         }
 
         if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
-            Alert.alert('Insufficient Permissions!', 'You need to grant camera permissions to use this app.');
-            return false;
+            return new Promise((resolve) => {
+                Alert.alert(
+                    'Insufficient Permissions!',
+                    'You need to grant camera permissions to use this app.',
+                    [
+                        { text: 'Cancel', onPress: () => resolve(false), style: 'cancel' },
+                        {
+                            text: 'Grant Permission',
+                            onPress: async () => {
+                                const permissionResponse = await requestCameraPermission();
+                                resolve(permissionResponse.granted);
+                            }
+                        }
+                    ]
+                );
+            });
         }
 
         if (mediaLibraryPermissionInformation.status === PermissionStatus.DENIED) {
-            Alert.alert('Insufficient Permissions!', 'You need to grant media library permissions to use this app.');
-            return false;
+            return new Promise((resolve) => {
+                Alert.alert(
+                    'Insufficient Permissions!',
+                    'You need to grant media library permissions to use this app.',
+                    [
+                        { text: 'Cancel', onPress: () => resolve(false), style: 'cancel' },
+                        {
+                            text: 'Grant Permission',
+                            onPress: async () => {
+                                const permissionResponse = await requestMediaLibraryPermission();
+                                resolve(permissionResponse.granted);
+                            }
+                        }
+                    ]
+                );
+            });
         }
 
         return true;
@@ -77,7 +101,6 @@ export function ImagePicker({ onChangeImage }: { onChangeImage: (uri: string) =>
             onChangeImage(image.assets[0].uri);
         }
     }
-
 
     return (
         <View style={styles.input}>
