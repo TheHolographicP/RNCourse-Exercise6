@@ -34,7 +34,7 @@ export function Map({ route, navigation }: MapScreenProps) {
             return;
         }
 
-        navigation.navigate('AddPlace', { pickedLocation: selectedLocation });
+        navigation.navigate('AddPlace', { pickedLocation: selectedLocation }, {pop: true});
     }, [navigation, selectedLocation]);
 
     

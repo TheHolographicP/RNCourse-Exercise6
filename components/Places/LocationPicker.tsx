@@ -84,7 +84,11 @@ export function LocationPicker() {
     }
 
     function pickOnMapHandler() {
-        const mapCenter = location
+        var mapCenter = location
+        if (selectedLocation) {
+            mapCenter = selectedLocation;
+        }
+
         navigation.navigate('Map', { location: mapCenter });
 
     }
