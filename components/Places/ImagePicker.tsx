@@ -1,13 +1,20 @@
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, Button, Alert, Image } from 'react-native';
 import { launchCameraAsync, launchImageLibraryAsync, useMediaLibraryPermissions, useCameraPermissions, PermissionStatus } from 'expo-image-picker';
+
+import { OutlinedButton } from 'components/OutlinedButton';
 
 import LAYOUT from 'constants/layout';
 import { Colors } from 'constants/colors';
+import { useState } from 'react';
+
+
 
 
 export function ImagePicker() {
     const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermissionInformation, requestMediaLibraryPermission] = useMediaLibraryPermissions();
+    const [imageUri, setImageUri] = useState<string>();
+
 
     async function verifyPermissions() {
         if (!cameraPermissionInformation || !mediaLibraryPermissionInformation) {
@@ -41,36 +48,46 @@ export function ImagePicker() {
     async function takeImageHandler() {
         const hasPermission = await verifyPermissions();
         if (!hasPermission) {
-            console.log('Permissions not granted!');
             return;
         }
         const image = await launchCameraAsync({
             allowsEditing: true,
+            allowsMultipleSelection: false,
             quality: 0.5,
             aspect: [16, 9]
         });
-        console.log(image);
+        if (!image.canceled) {
+            setImageUri(image.assets[0].uri);
+        }
     }
 
     async function pickImageHandler() {
         const hasPermission = await verifyPermissions();
         if (!hasPermission) {
-            console.log('Permissions not granted!');
             return;
         }
 
         const image = await launchImageLibraryAsync({
-            quality: 0.5
+            quality: 0.5,
+            allowsMultipleSelection: false,
         });
-        console.log(image);
+        if (!image.canceled) {
+            setImageUri(image.assets[0].uri);
+        }
     }
 
 
     return (
         <View style={styles.input}>
-            <Text>Image Picker</Text>
-            <Button title="Take Image" onPress={takeImageHandler} />
-            <Button title="Pick Image" onPress={pickImageHandler} color={Colors.primary500} />
+            <Text style={styles.inputLabel}>Image Picker:</Text>
+            <View style={styles.imagePreview}> 
+                {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} /> : <Text>No image picked yet.</Text>}
+            </View>
+            <View style={styles.buttonsContainer}>
+                <OutlinedButton icon="camera" onPress={takeImageHandler}>Take Image</OutlinedButton>
+                <OutlinedButton icon="image" onPress={pickImageHandler}>Pick Image</OutlinedButton>
+            </View>
+
         </View>
     );
 }
@@ -78,12 +95,32 @@ export function ImagePicker() {
 const styles = StyleSheet.create({
     input: {
         flex: 1,
-        padding: LAYOUT.padding
+        alignItems: 'center'
+    },
+    imagePreview: {
+        borderRadius: LAYOUT.borderRadius,
+        backgroundColor: Colors.primary100,
+        width: '100%',
+        aspectRatio: 16 / 9,
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+    },
+    buttonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: LAYOUT.padding,
+        gap: LAYOUT.gap
     },
     inputLabel: {
         fontWeight: 'bold',
         marginBottom: 4,
         fontSize: 16,
-        color: Colors.primary500
-    },
+        color: Colors.primary500,
+        alignSelf: 'flex-start'
+    }
 });
