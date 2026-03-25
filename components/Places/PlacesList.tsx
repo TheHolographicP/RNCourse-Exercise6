@@ -1,19 +1,24 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { PlaceItem } from 'components/Places/PlaceItem';
 
 import { Place } from 'model/place';
 import LAYOUT from 'constants/layout';
+import { RootStackParamList } from 'types/navigation';
 
 
 
 export function PlacesList({ places }: { places: Place[] }) {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
     function renderPlaceItem(item: Place) {
-        return <PlaceItem place={item} onSelect={handleSelectPlace} />;
+        return <PlaceItem place={item} onSelect={() => handleSelectPlace(item.id)} />;
     }
     
-    function handleSelectPlace() {
-        console.log('Place selected');
+    function handleSelectPlace(placeId: string) {
+        navigation.navigate('PlaceDetails', { placeId });
     }
 
 

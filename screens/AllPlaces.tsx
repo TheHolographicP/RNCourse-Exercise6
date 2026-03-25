@@ -1,8 +1,8 @@
 import { PlacesList } from 'components/Places/PlacesList';
-import { View, Text } from 'react-native';
+import { AllPlacesScreenProps } from 'types/navigation';
 
 
-export function AllPlaces() {
+export function AllPlaces(_props: AllPlacesScreenProps) {
   return (
     <PlacesList places={[]} />
   );
