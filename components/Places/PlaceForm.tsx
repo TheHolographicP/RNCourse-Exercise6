@@ -8,7 +8,7 @@ import { LocationPicker } from 'components/Places/LocationPicker';
 
 import type { Location } from 'model/place';
 
-export function PlaceForm({pickedLocation}: {pickedLocation?: Location}) {
+export function PlaceForm() {
     const [enteredTitle, setEnteredTitle] = useState('');
 
     function handleTitleChange(text: string) {
@@ -24,7 +24,7 @@ export function PlaceForm({pickedLocation}: {pickedLocation?: Location}) {
             </View>
 
             <ImagePicker />
-            <LocationPicker />
+            <LocationPicker/>
         </ScrollView>
     );
 }
