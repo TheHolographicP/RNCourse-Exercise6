@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 
 
-export function ImagePicker() {
+export function ImagePicker({ onChangeImage }: { onChangeImage: (uri: string) => void }) {
     const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermissionInformation, requestMediaLibraryPermission] = useMediaLibraryPermissions();
     const [imageUri, setImageUri] = useState<string>();
@@ -58,6 +58,7 @@ export function ImagePicker() {
         });
         if (!image.canceled) {
             setImageUri(image.assets[0].uri);
+            onChangeImage(image.assets[0].uri);
         }
     }
 
@@ -73,6 +74,7 @@ export function ImagePicker() {
         });
         if (!image.canceled) {
             setImageUri(image.assets[0].uri);
+            onChangeImage(image.assets[0].uri);
         }
     }
 

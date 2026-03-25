@@ -13,7 +13,7 @@ import LAYOUT from 'constants/layout';
 import { Colors } from 'constants/colors';
 
 
-export function LocationPicker() {
+export function LocationPicker({ onChangeLocation }: { onChangeLocation: (location: Location) => void }) {
     const navigation = useNavigation<RootStackNavigationProp>();
     const route = useRoute<AddPlaceScreenProps['route']>();
     
@@ -55,6 +55,7 @@ export function LocationPicker() {
         const pickedLocation = route.params?.pickedLocation;
         if (pickedLocation) {
             setSelectedLocation(pickedLocation);
+            onChangeLocation(pickedLocation);
         }
     }, [route.params?.pickedLocation]);
     
@@ -79,7 +80,10 @@ export function LocationPicker() {
             lat: position.coords.latitude,
             lng: position.coords.longitude
         });
-        
+        onChangeLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        });
         setIsLoadingLocation(false);
     }
 
