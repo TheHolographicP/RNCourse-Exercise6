@@ -1,6 +1,6 @@
 import { use, useEffect, useState } from 'react';
 import { View, Text, Alert, StyleSheet, ActivityIndicator } from 'react-native';
-import { getCurrentPositionAsync, getLastKnownPositionAsync, LocationAccuracy, useForegroundPermissions } from 'expo-location';
+import { getCurrentPositionAsync, getLastKnownPositionAsync, LocationAccuracy, reverseGeocodeAsync, useForegroundPermissions } from 'expo-location';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -12,16 +12,23 @@ import { AddPlaceScreenProps, RootStackNavigationProp } from 'types/navigation';
 import LAYOUT from 'constants/layout';
 import { Colors } from 'constants/colors';
 
+type Props = {
+    onChangeLocation: (location: Location) => void;
+    onChangeAddress: (address: string) => void;
+}
 
-export function LocationPicker({ onChangeLocation }: { onChangeLocation: (location: Location) => void }) {
+export function LocationPicker({ onChangeLocation, onChangeAddress }: Props) {
     const navigation = useNavigation<RootStackNavigationProp>();
     const route = useRoute<AddPlaceScreenProps['route']>();
     
     const [location, setLocation] = useState<Location>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
+    const [selectedAddress, setSelectedAddress] = useState<string>();
 
     const [permission, requestPermission] = useForegroundPermissions();
+
     const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+    const [isLoadingAddress, setIsLoadingAddress] = useState(false);
 
     async function verifyPermissions() {
         if (permission && permission.status !== 'granted') {
@@ -56,6 +63,8 @@ export function LocationPicker({ onChangeLocation }: { onChangeLocation: (locati
         if (pickedLocation) {
             setSelectedLocation(pickedLocation);
             onChangeLocation(pickedLocation);
+            setIsLoadingAddress(true);
+            determineAddress(pickedLocation);
         }
     }, [route.params?.pickedLocation]);
     
@@ -71,20 +80,33 @@ export function LocationPicker({ onChangeLocation }: { onChangeLocation: (locati
             position = await getCurrentPositionAsync({accuracy: LocationAccuracy.High});
         }
 
-        setLocation({
+        const locationResult: Location = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
-        });
+        };
 
-        setSelectedLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        });
-        onChangeLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        });
+        setLocation(locationResult);
+
+        setSelectedLocation(locationResult);
+        onChangeLocation(locationResult);
         setIsLoadingLocation(false);
+        determineAddress(locationResult);
+    }
+
+    async function determineAddress(location: Location) {
+        setIsLoadingAddress(true);
+        const results = await reverseGeocodeAsync({
+            latitude: location.lat,
+            longitude: location.lng
+        });
+        if (results.length === 0) {
+            return '';
+        }
+        const address = `${results[0].name}, ${results[0].city}, ${results[0].region}, ${results[0].country}`;
+        setSelectedAddress(address);
+        onChangeAddress(address);
+        setIsLoadingAddress(false);
+        return address;
     }
 
     function pickOnMapHandler() {
@@ -128,6 +150,13 @@ export function LocationPicker({ onChangeLocation }: { onChangeLocation: (locati
                 <OutlinedButton icon="location" onPress={getLocationHandler}>Use Current Location</OutlinedButton>
                 <OutlinedButton icon="map" onPress={pickOnMapHandler}>Pick on Map</OutlinedButton>
             </View>
+            <View style={styles.textContainer}>
+                {isLoadingAddress ? (
+                    <ActivityIndicator size="small" color={Colors.primary500} />
+                ) : (
+                    <Text>{selectedAddress ? `Address: ${selectedAddress}` : 'No address determined yet.'}</Text>
+                )}
+            </View>
 
         </View>
     );
@@ -146,6 +175,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+    },
+    textContainer:{
+        marginVertical: 8,
+        paddingHorizontal: 4,
+        paddingVertical: 8,
+        fontSize: 16,
+        borderBottomColor: Colors.primary700,
+        borderBottomWidth: 1,
+        backgroundColor: Colors.primary100,
     },
     map: {
         width: '100%',

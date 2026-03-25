@@ -14,6 +14,7 @@ export function PlaceForm() {
     const [enteredTitle, setEnteredTitle] = useState('');
     const [selectedImageURI, setSelectedImageURI] = useState<string>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
+    const [selectedAddress, setSelectedAddress] = useState<string>();
 
     const handleTitleChange = useCallback((text: string) => {
         setEnteredTitle(text);
@@ -27,11 +28,18 @@ export function PlaceForm() {
         setSelectedImageURI(uri);
     }, []);
 
+    const handleAddressChange = useCallback((address: string) => {
+        setSelectedAddress(address);
+    }, []);
+
+
     function savePlaceHandler() {
         console.log('Saving place...');
         console.log('Title:', enteredTitle);
         console.log('Image URI:', selectedImageURI);
         console.log('Location:', selectedLocation);
+        console.log('Address:', selectedAddress);
+
     }
 
     return (
@@ -42,7 +50,7 @@ export function PlaceForm() {
             </View>
 
             <ImagePicker onChangeImage={handleImageChange} />
-            <LocationPicker onChangeLocation={handleLocationChange} />
+            <LocationPicker onChangeLocation={handleLocationChange} onChangeAddress={handleAddressChange} />
             <Button onPress={savePlaceHandler}>Save Place</Button>
         </ScrollView>
     );
