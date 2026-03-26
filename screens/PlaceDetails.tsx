@@ -11,6 +11,7 @@ import LAYOUT from 'constants/layout';
 
 import { PlaceDetailsScreenProps } from 'types/navigation';
 import { Place } from 'model/place';
+import { IconButton } from 'components/IconButton';
 
 
 export function PlaceDetails({route, navigation}: PlaceDetailsScreenProps) {
@@ -47,7 +48,16 @@ export function PlaceDetails({route, navigation}: PlaceDetailsScreenProps) {
     }, [route.params.placeId]);
 
     useEffect(() => {
-        navigation.setOptions({ title: screenName });
+        navigation.setOptions({ title: screenName,
+            headerRight: ({tintColor}) => (
+                <IconButton 
+                    icon="pencil"
+                    size={24}
+                    onPress={() => navigation.navigate('AddPlace', { existingPlace: placeDetails })}
+                    iconColor={tintColor}
+                />
+            )
+         });
     }, [navigation, screenName]);
 
     if (isLoading) {

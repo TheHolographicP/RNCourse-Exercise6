@@ -6,7 +6,7 @@ import { Location, Place } from 'model/place';
 
 export type RootStackParamList = {
   AllPlaces: {places?: Place[]; };
-  AddPlace: { pickedLocation?: Location | undefined};
+  AddPlace: { pickedLocation?: Location | undefined, existingPlace?: Place | undefined };
   PlaceDetails: { placeId: string };
   Map: {location: Location| undefined, readOnly?: boolean};
 };

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, TextInput, StyleSheet } from 'react-native';
 
 import LAYOUT from 'constants/layout';
@@ -12,9 +12,10 @@ import { Location, Place } from 'model/place';
 
 type Props = {
     onCreatePlace: (place: Place) => void;
+    existingPlace?: Place;
 }
 
-export function PlaceForm({onCreatePlace}: Props) {
+export function PlaceForm({onCreatePlace, existingPlace}: Props) {
     const [enteredTitle, setEnteredTitle] = useState('');
     const [selectedImageURI, setSelectedImageURI] = useState<string>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -36,6 +37,14 @@ export function PlaceForm({onCreatePlace}: Props) {
         setSelectedAddress(address);
     }, []);
 
+    useEffect(() => {
+        if (existingPlace) {
+            setEnteredTitle(existingPlace.title);
+            setSelectedImageURI(existingPlace.imageUri);
+            setSelectedLocation(existingPlace.location);
+            setSelectedAddress(existingPlace.address);
+        }
+    }, [existingPlace]);
 
     function savePlaceHandler() {
         const savedPlace: Place = new Place(
@@ -44,6 +53,9 @@ export function PlaceForm({onCreatePlace}: Props) {
             selectedAddress!,
             selectedLocation!
         );
+        if (existingPlace) {
+            savedPlace.id = existingPlace.id;
+        }
         onCreatePlace(savedPlace);
 
     }
@@ -55,8 +67,8 @@ export function PlaceForm({onCreatePlace}: Props) {
                 <TextInput style={styles.textInput} onChangeText={handleTitleChange} value={enteredTitle} />
             </View>
 
-            <ImagePicker onChangeImage={handleImageChange} />
-            <LocationPicker onChangeLocation={handleLocationChange} onChangeAddress={handleAddressChange} />
+            <ImagePicker onChangeImage={handleImageChange} initialValue={existingPlace?.imageUri} />
+            <LocationPicker onChangeLocation={handleLocationChange} onChangeAddress={handleAddressChange} initialLocation={existingPlace?.location} initialAddress={existingPlace?.address} />
             <Button onPress={savePlaceHandler}>Save Place</Button>
         </ScrollView>
     );
