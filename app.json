@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "backgroundColor":"#24180f",
+    "backgroundColor": "#24180f",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -34,7 +34,8 @@
           "photosPermission": "The app accesses your photos to let you select images of your favorite places.",
           "cameraPermission": "The app accesses your camera to let you take photos of your favorite places."
         }
-      ]
+      ],
+      "expo-sqlite"
     ]
   }
 }
