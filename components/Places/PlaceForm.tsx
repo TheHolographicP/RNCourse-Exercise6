@@ -6,16 +6,14 @@ import { Colors } from 'constants/colors';
 import { ImagePicker } from 'components/Places/ImagePicker';
 import { LocationPicker } from 'components/Places/LocationPicker';
 
-import { Button } from 'components/Button';
-
 import { Location, Place } from 'model/place';
 
 type Props = {
-    onCreatePlace: (place: Place) => void;
+    setPlace: (place: Place | undefined) => void;
     existingPlace?: Place;
 }
 
-export function PlaceForm({onCreatePlace, existingPlace}: Props) {
+export function PlaceForm({setPlace, existingPlace}: Props) {
     const [enteredTitle, setEnteredTitle] = useState('');
     const [selectedImageURI, setSelectedImageURI] = useState<string>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -46,19 +44,16 @@ export function PlaceForm({onCreatePlace, existingPlace}: Props) {
         }
     }, [existingPlace]);
 
-    function savePlaceHandler() {
-        const savedPlace: Place = new Place(
-            enteredTitle,
-            selectedImageURI!,
-            selectedAddress!,
-            selectedLocation!
-        );
-        if (existingPlace) {
-            savedPlace.id = existingPlace.id;
+    useEffect(() => {
+        const trimmedTitle = enteredTitle.trim();
+        if (!trimmedTitle || !selectedImageURI || !selectedAddress || !selectedLocation) {
+            setPlace(undefined);
+            return;
         }
-        onCreatePlace(savedPlace);
 
-    }
+        const draftPlace = new Place(trimmedTitle, selectedImageURI, selectedAddress, selectedLocation);
+        setPlace(draftPlace);
+    }, [enteredTitle, selectedImageURI, selectedAddress, selectedLocation, setPlace]);
 
     return (
         <ScrollView style={styles.form}>
@@ -69,7 +64,6 @@ export function PlaceForm({onCreatePlace, existingPlace}: Props) {
 
             <ImagePicker onChangeImage={handleImageChange} initialValue={existingPlace?.imageUri} />
             <LocationPicker onChangeLocation={handleLocationChange} onChangeAddress={handleAddressChange} initialLocation={existingPlace?.location} initialAddress={existingPlace?.address} />
-            <Button onPress={savePlaceHandler}>Save Place</Button>
         </ScrollView>
     );
 }

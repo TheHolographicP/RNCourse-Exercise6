@@ -1,18 +1,27 @@
+import { useCallback, useState } from 'react';
+
 import { PlaceForm } from 'components/Places/PlaceForm';
 import { Place } from 'model/place';
 import { AddPlaceScreenProps } from 'types/navigation';
 
 import { upsertPlace } from 'store/database';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { IconButton } from 'components/IconButton';
 
 export function AddPlace({ route, navigation }: AddPlaceScreenProps) {
-    function handleCreatePlace(place: Place) {
-        upsertPlace(place);
-        navigation.navigate('AllPlaces', {}, { pop: true });
-    }
+    const [placeObject, setPlaceObject] = useState<Place>();
     
-    useEffect(() => {
+    const handleCreatePlace = useCallback(() => {
+        if (placeObject) {
+            if (route.params?.existingPlace?.id) {
+                placeObject.id = route.params.existingPlace.id;
+            }
+            upsertPlace(placeObject);
+            navigation.navigate('AllPlaces', {}, { pop: true });
+        }
+    }, [navigation, placeObject, route.params?.existingPlace?.id]);
+    
+    useLayoutEffect(() => {
         if (route.params?.existingPlace) {
             navigation.setOptions({ title: 'Edit Place' });
         } else {
@@ -23,14 +32,14 @@ export function AddPlace({ route, navigation }: AddPlaceScreenProps) {
                 <IconButton
                     icon="save"
                     size={24}
-                    onPress={() => {}}
+                    onPress={handleCreatePlace}
                     iconColor={tintColor}
                 />
             )
         });
-    }, [navigation, route.params?.existingPlace]);
+    }, [handleCreatePlace, navigation, route.params?.existingPlace]);
 
     return (
-        <PlaceForm onCreatePlace={handleCreatePlace} existingPlace={route.params?.existingPlace} />
+        <PlaceForm setPlace={setPlaceObject} existingPlace={route.params?.existingPlace} />
     );
 }
