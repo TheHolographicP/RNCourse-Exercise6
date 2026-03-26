@@ -42,7 +42,7 @@ A React Native application to store, manage, and explore your favorite places wi
 *Safety confirmation dialog before permanently deleting a place*
 
 ### Add & Edit Places
-![Add Place Demo](./assets/addPlaceGif.gif)
+![Add Place Demo](./assets/addPlace.gif)
 *Complete workflow: add title, capture/select photo, and pick location*
 
 
