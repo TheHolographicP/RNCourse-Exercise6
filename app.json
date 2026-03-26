@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "RNCourse-Exercise6",
-    "slug": "RNCourse-Exercise6",
+    "name": "Favorite Places",
+    "slug": "favorite-places",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "backgroundColor": "#24180f",
     "splash": {
