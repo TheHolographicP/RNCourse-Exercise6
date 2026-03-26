@@ -26,7 +26,10 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -41,7 +44,7 @@
       ],
       "expo-sqlite",
       [
-      "expo-splash-screen",
+        "expo-splash-screen",
         {
           "backgroundColor": "#221c30",
           "image": "./assets/images/splash-icon.png",
@@ -52,6 +55,11 @@
           "imageWidth": 200
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4c1c085a-850c-436a-8abf-612231ad04b6"
+      }
+    }
   }
 }
