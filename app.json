@@ -9,12 +9,16 @@
     "newArchEnabled": true,
     "backgroundColor": "#24180f",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash-icon-light.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": {
+        "dark": "./assets/images/ios-dark.png",
+        "light": "./assets/images/ios-light.png"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -35,7 +39,19 @@
           "cameraPermission": "The app accesses your camera to let you take photos of your favorite places."
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+      "expo-splash-screen",
+        {
+          "backgroundColor": "#221c30",
+          "image": "./assets/images/splash-icon.png",
+          "dark": {
+            "image": "./assets/images/splash-icon-dark.png",
+            "backgroundColor": "#primary50"
+          },
+          "imageWidth": 200
+        }
+      ]
     ]
   }
 }
