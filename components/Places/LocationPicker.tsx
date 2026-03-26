@@ -15,9 +15,11 @@ import { Colors } from 'constants/colors';
 type Props = {
     onChangeLocation: (location: Location) => void;
     onChangeAddress: (address: string) => void;
+    initialLocation?: Location;
+    initialAddress?: string;
 }
 
-export function LocationPicker({ onChangeLocation, onChangeAddress }: Props) {
+export function LocationPicker({ onChangeLocation, onChangeAddress, initialLocation, initialAddress }: Props) {
     const navigation = useNavigation<RootStackNavigationProp>();
     const route = useRoute<AddPlaceScreenProps['route']>();
     
@@ -57,6 +59,14 @@ export function LocationPicker({ onChangeLocation, onChangeAddress }: Props) {
         
         fetchLocation();
     }, []);
+
+    useEffect(() => {
+        if (initialLocation) {
+            setSelectedLocation(initialLocation);
+            setSelectedAddress(initialAddress);
+            onChangeLocation(initialLocation);
+        }
+    }, [initialLocation]);
 
     useEffect(() => {
         const pickedLocation = route.params?.pickedLocation;

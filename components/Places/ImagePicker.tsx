@@ -5,12 +5,18 @@ import { OutlinedButton } from 'components/OutlinedButton';
 
 import LAYOUT from 'constants/layout';
 import { Colors } from 'constants/colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export function ImagePicker({ onChangeImage }: { onChangeImage: (uri: string) => void }) {
+export function ImagePicker({ onChangeImage, initialValue }: { onChangeImage: (uri: string) => void, initialValue?: string }) {
     const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermissionInformation, requestMediaLibraryPermission] = useMediaLibraryPermissions();
     const [imageUri, setImageUri] = useState<string>();
+
+    useEffect(() => {
+        if (initialValue) {
+            setImageUri(initialValue);
+        }
+    }, [initialValue]);
 
     async function verifyPermissions() {
         if (!cameraPermissionInformation || !mediaLibraryPermissionInformation) {
