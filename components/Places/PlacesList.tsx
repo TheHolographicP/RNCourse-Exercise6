@@ -18,8 +18,10 @@ export function PlacesList({ places }: { places: Place[] }) {
         return <PlaceItem place={item} onSelect={() => handleSelectPlace(item.id)} />;
     }
     
-    function handleSelectPlace(placeId: string) {
-        navigation.navigate('PlaceDetails', { placeId });
+    function handleSelectPlace(placeId: string | undefined) {
+        if (placeId) {
+            navigation.navigate('PlaceDetails', { placeId });
+        }
     }
 
 
@@ -37,8 +39,9 @@ export function PlacesList({ places }: { places: Place[] }) {
         <View style={styles.rootContainer}>
             <FlatList
                 data={places}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id!}
                 renderItem={({ item }) => renderPlaceItem(item)}
+                contentContainerStyle={{ gap: LAYOUT.padding }}
             />
         </View>
     );
