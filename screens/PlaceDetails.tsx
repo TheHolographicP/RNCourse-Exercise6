@@ -2,7 +2,7 @@ import { ActivityIndicator, View, Text, ScrollView, StyleSheet, Alert, Image } f
 import { useEffect, useState } from 'react';
 
 
-import { fetchPlaceById } from 'store/database';
+import { deletePlace, fetchPlaceById } from 'store/database';
 import { OutlinedButton } from 'components/OutlinedButton';
 
 import { Colors } from 'constants/colors';
@@ -29,6 +29,28 @@ export function PlaceDetails({route, navigation}: PlaceDetailsScreenProps) {
         });
     }
 
+    async function handleDeletePlace() {
+        if (!placeDetails?.id) {
+            return;
+        }
+
+        try {
+            await deletePlace(placeDetails.id);
+            navigation.navigate('AllPlaces', {}, { pop: true });
+        } catch (error) {
+            Alert.alert('Error', 'Failed to delete place', [
+                { text: 'OK' }
+            ]);
+        }
+    }
+
+    function confirmDeletePlace() {
+        Alert.alert('Are You Sure', 'This will permanently delete this place.', [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Delete', style: 'destructive', onPress: handleDeletePlace }
+        ]);
+    }
+
     async function fetchPlaceDetails() {
         const placeId = route.params.placeId;
         try {
@@ -50,15 +72,23 @@ export function PlaceDetails({route, navigation}: PlaceDetailsScreenProps) {
     useEffect(() => {
         navigation.setOptions({ title: screenName,
             headerRight: ({tintColor}) => (
-                <IconButton 
-                    icon="pencil"
-                    size={24}
-                    onPress={() => navigation.navigate('AddPlace', { existingPlace: placeDetails })}
-                    iconColor={tintColor}
-                />
+                <View style={styles.headerActions}>
+                    <IconButton 
+                        icon="trash"
+                        size={24}
+                        onPress={confirmDeletePlace}
+                        iconColor={tintColor}
+                    />
+                    <IconButton 
+                        icon="pencil"
+                        size={24}
+                        onPress={() => navigation.navigate('AddPlace', { existingPlace: placeDetails })}
+                        iconColor={tintColor}
+                    />
+                </View>
             )
          });
-    }, [navigation, screenName]);
+    }, [navigation, placeDetails, screenName]);
 
     if (isLoading) {
         return (
@@ -118,4 +148,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    headerActions: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    }
 });
