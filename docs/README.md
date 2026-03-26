@@ -22,10 +22,12 @@ A React Native application to store, manage, and explore your favorite places wi
 
 ### Places List
 <img src="./assets/placeList.png" width="295" height="640" />
+
 *Browse all your saved places in an organized list view*
 
 ### Place Details
 <img src="./assets/placeItem.png" width="295" height="640" />
+
 *View detailed information about a place with photo and location*
 
 
