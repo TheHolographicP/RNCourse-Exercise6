@@ -21,28 +21,32 @@ A React Native application to store, manage, and explore your favorite places wi
 ## Screenshots & Demo
 
 ### Places List
-![Places List](./assets/placeList.png)
+<img src="./assets/placeList.png" width="295" height="640" />
 *Browse all your saved places in an organized list view*
 
 ### Place Details
-![Place Details](./assets/placeItem.png)
+<img src="./assets/placeItem.png" width="295" height="640" />
 *View detailed information about a place with photo and location*
 
 
 ### Edit Place Form
-![Edit Place Form](./assets/editPlace.png)
+<img src="./assets/editPlace.png" width="295" height="640" />
+
 *Comprehensive form to update place information with image and location pickers*
 
 ### Location Picker
-![Location Picker](./assets/locationPicker.png)
+<img src="./assets/locationPicker.png" width="295" height="640" />
+
 *Interactive map for selecting and confirming place coordinates*
 
 ### Delete Confirmation
-![Delete Confirmation](./assets/deletePlace.png)
+<img src="./assets/deletePlace.png" width="295" height="640" />
+
 *Safety confirmation dialog before permanently deleting a place*
 
 ### Add & Edit Places
-![Add Place Demo](./assets/addPlace.gif)
+<img src="./assets/addPlace.gif" width="295" height="640" />
+
 *Complete workflow: add title, capture/select photo, and pick location*
 
 
