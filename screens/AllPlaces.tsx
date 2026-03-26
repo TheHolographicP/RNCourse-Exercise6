@@ -3,17 +3,22 @@ import { PlacesList } from 'components/Places/PlacesList';
 import { Place } from 'model/place';
 import { useEffect, useState } from 'react';
 import { AllPlacesScreenProps } from 'types/navigation';
-
+import { fetchPlaces } from 'store/database';
 
 export function AllPlaces({ route }: AllPlacesScreenProps) {
   const [loadedPlaces, setLoadedPlaces] = useState<Place[]>([]);
   const isFocused = useIsFocused();
   
   useEffect(() => {
-    if (isFocused && route.params?.newPlace) {
-      setLoadedPlaces((currentPlaces) => [...currentPlaces, route.params.newPlace!]);
+    async function loadPlaces() {
+      const places = await fetchPlaces();
+      setLoadedPlaces(places);
+
     }
-  }, [isFocused, route.params]);
+    if (isFocused) {
+      loadPlaces();
+    }
+  }, [isFocused]);
 
 
   return (
