@@ -1,103 +1,130 @@
-# React Native Auth App (Expo + Firebase)
+# Favorite Places App
 
-This app demonstrates a complete mobile authentication flow using Expo, React Navigation, Firebase Authentication (Identity Toolkit REST API), and a Firebase Realtime Database endpoint that requires authentication.
+A React Native application to store, manage, and explore your favorite places with photos, locations, and map integration.
 
-## What The App Does
+## Features
 
-- Lets users sign up with email/password.
-- Lets existing users log in.
-- Stores the auth token locally so sessions survive app restarts.
-- Restores the stored token on app launch before the first screen renders.
-- Shows an authenticated screen that fetches protected data from Firebase.
-- Supports logout, which clears both in-memory auth state and persisted token.
+- **Browse Places**: View a scrollable list of all your saved favorite places with thumbnails and addresses
+- **Add Places**: Create new place entries with:
+  - Title
+  - Photo (take a new photo or pick from gallery)
+  - Location (use current device location or pick on map)
+  - Address (automatically generated from coordinates)
+- **Edit Places**: Update existing place details including title, photo, and location
+- **Delete Places**: Remove places with a confirmation dialog to prevent accidental deletion
+- **View Details**: See full details of each place including a large photo and complete address
+- **Map Integration**: 
+  - View place locations on an interactive map
+  - Pick new locations directly on the map
+  - Read-only map view when viewing place details
 
-## Auth Architecture
+## Screenshots & Demo
 
-### 1) Firebase Authentication
+### Places List
+![Places List](./assets/placeList.png)
+*Browse all your saved places in an organized list view*
 
-The app calls Firebase Identity Toolkit endpoints:
+### Place Details
+![Place Details](./assets/placeItem.png)
+*View detailed information about a place with photo and location*
 
-- `accounts:signUp` to create a user
-- `accounts:signInWithPassword` to log in
 
-Both return an `idToken`. That token is the proof of authentication used for protected backend requests.
+### Edit Place Form
+![Edit Place Form](./assets/editPlace.png)
+*Comprehensive form to update place information with image and location pickers*
 
-### 2) Context-Based Auth State
+### Location Picker
+![Location Picker](./assets/locationPicker.png)
+*Interactive map for selecting and confirming place coordinates*
 
-`AuthContext` holds:
+### Delete Confirmation
+![Delete Confirmation](./assets/deletePlace.png)
+*Safety confirmation dialog before permanently deleting a place*
 
-- `token`
-- `isAuthenticated`
-- `authenticate(token)`
-- `logout()`
+### Add & Edit Places
+![Add Place Demo](./assets/addPlaceGif.gif)
+*Complete workflow: add title, capture/select photo, and pick location*
 
-`authenticate` saves token to context and `AsyncStorage`.
-`logout` clears token from context and `AsyncStorage`.
 
-### 3) Startup Token Restore + Splash Screen
+## Getting Started
 
-On app start, splash is kept visible while startup auth restore runs:
+### Prerequisites
+- Node.js and npm
+- Expo CLI
+- React Native development environment
 
-1. Read `token` from `AsyncStorage`
-2. If present, pass it to context
-3. Hide splash screen
-4. Render navigation
+### Installation
 
-This prevents flicker between unauthenticated and authenticated stacks.
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### 4) Protected Backend Access
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-After login, the app requests data from Firebase Realtime Database using the auth token:
+4. Run on your device or simulator:
+   - iOS: `i`
+   - Android: `a`
+   - Web: `w`
 
-- `GET /message.json?auth=<idToken>`
+## Tech Stack
 
-If the token is valid and database rules require auth, the request succeeds.
+- **Framework**: React Native with Expo
+- **Navigation**: React Navigation (Native Stack)
+- **Database**: SQLite (via expo-sqlite)
+- **Maps**: React Native Maps
+- **Icons**: Ionicons
 
-## Error Handling
+## Project Structure
 
-The auth API maps Firebase and network failures to user-facing errors:
-
-- `AUTH/EMAIL_EXISTS`
-- `AUTH/INVALID_CREDENTIALS`
-- `AUTH/INVALID_PASSWORD`
-- `AUTH/USER_DISABLED`
-- `AUTH/TOO_MANY_REQUESTS`
-- `AUTH/NETWORK_ERROR`
-- `AUTH/SERVICE_UNAVAILABLE`
-- `AUTH/UNKNOWN`
-
-Screens display both a readable code and message so users can understand what failed.
-
-## Environment Variables
-
-This project reads the Firebase API key from:
-
-- `EXPO_PUBLIC_FIREBASE_API_KEY`
-
-Create `.env.local` in project root:
-
-```env
-EXPO_PUBLIC_FIREBASE_API_KEY=your_firebase_web_api_key
+```
+src/
+├── screens/          # Screen components
+├── components/       # Reusable UI components
+├── store/           # Database functions
+├── model/           # Data models
+├── constants/       # App constants (colors, layout)
+├── types/           # TypeScript type definitions
+└── assets/          # App assets
 ```
 
-Then restart Expo after changing env values.
+## Key Screens & Components
 
-## Firebase Backend Setup Notes
+- **AllPlaces**: Displays list of all saved places
+- **PlaceDetails**: Shows detailed view with photo, location, and action buttons
+- **AddPlace**: Form for creating and editing places
+- **Map**: Interactive map for viewing and selecting locations
+- **PlaceForm**: Reusable form component with image and location pickers
+- **ImagePicker**: Camera/gallery selection component
+- **LocationPicker**: Map-based location selection component
 
-Use your Firebase project values for auth and database.
+## Database
 
-For Realtime Database, example rules that require authentication:
+The app uses SQLite to persist places locally. Each place stores:
+- `id`: Unique identifier
+- `title`: Place name
+- `imageUri`: File path to place photo
+- `address`: Location address
+- `lat`/`lng`: Geographic coordinates
 
-```json
-{
-	"rules": {
-		".read": "auth != null",
-		".write": "auth != null"
-	}
-}
+## Navigation Flow
+
+```
+AllPlaces (list)
+├─→ PlaceDetails (view)
+│   ├─→ Map (read-only)
+│   └─→ AddPlace (edit)
+└─→ AddPlace (create)
+    └─→ Map (select location)
 ```
 
-With rules like these, unauthenticated requests are denied.
+## License
+
+MIT
 
 ## Run The App
 
