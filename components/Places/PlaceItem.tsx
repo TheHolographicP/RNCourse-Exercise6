@@ -14,8 +14,8 @@ export function PlaceItem({ place, onSelect }: { place: Place, onSelect: () => v
                         <Image source={{ uri: place.imageUri }} style={styles.image} />
                     </View>
                     <View style={styles.textContainer}>
-                        <Text style={styles.title}>{place.title}</Text>
-                        <Text style={styles.address}>{place.address}</Text>
+                        <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">{place.title}</Text>
+                        <Text style={styles.address} numberOfLines={2} ellipsizeMode="tail">{place.address}</Text>
                     </View>
                 </View>
             </Pressable>
@@ -56,6 +56,6 @@ const styles = StyleSheet.create({
     },
     image: {
         aspectRatio: 16/9,
-        height: '100%',
+        height: 100,
     },
 })
