@@ -11,6 +11,7 @@ export function Map({ route, navigation }: MapScreenProps) {
     const [selectedLocation, setSelectedLocation] = useState<PlaceLocation | undefined>(() => route.params?.location);
 
     const initialLocation = route.params?.location;
+    const readOnly = route.params?.readOnly;
 
     const region = {
         latitude: initialLocation?.lat || 51.105813,
@@ -39,6 +40,9 @@ export function Map({ route, navigation }: MapScreenProps) {
 
     
     useLayoutEffect(() => {
+        if (readOnly) {
+            return;
+        }
         navigation.setOptions({
             headerRight: ({tintColor}) => (
                 <IconButton
@@ -57,7 +61,7 @@ export function Map({ route, navigation }: MapScreenProps) {
             initialRegion={region}
             showsMyLocationButton={true}
             showsUserLocation={true}
-            onPress={selectLocationHandler}
+            onPress={readOnly ? undefined : selectLocationHandler}
         >
             {selectedLocation && (
                 <Marker
